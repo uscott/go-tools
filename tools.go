@@ -30,8 +30,11 @@ func Clamp(x, lb, ub float64) float64 {
 }
 
 func CopyMatrix(m *mat.Dense) *mat.Dense {
+	if m == nil {
+		return nil
+	}
 	nr, nc := m.Dims()
-	return mat.NewDense(nr, nc, RawData(m))
+	return mat.NewDense(nr, nc, RawDataRef(m))
 }
 
 func CopyMap(m_in map[string]interface{}) map[string]interface{} {
@@ -305,7 +308,7 @@ func Ncols(m *mat.Dense) int {
 	return nc
 }
 
-func RawData(m *mat.Dense) []float64 {
+func RawDataRef(m *mat.Dense) []float64 {
 	var g blas64.General
 	g = m.RawMatrix()
 	return g.Data
