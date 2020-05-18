@@ -3,6 +3,7 @@ package tools
 import (
 	"errors"
 	"fmt"
+	"gonum.org/v1/gonum/blas/blas64"
 	"gonum.org/v1/gonum/mat"
 	"math"
 	"time"
@@ -28,6 +29,12 @@ func Clamp(x, lb, ub float64) float64 {
 	return math.Min(ub, math.Max(lb, x))
 }
 
+func Copy(m *mat.Dense) *mat.Dense {
+	buf []float64 = RawData(m)
+	nr, nc := m.Dims()
+	return mat.NewDense(nr, nc, buf)
+}
+
 func CopyMap(m_in map[string]interface{}) map[string]interface{} {
 	cp := make(map[string]interface{})
 	for k, v := range m_in {
@@ -41,6 +48,51 @@ func CopyMap(m_in map[string]interface{}) map[string]interface{} {
 	return cp
 }
 
+func GetRowVctr(src *[]float64, dst *[][]float64) error {
+	switch {
+	case src == nil:
+		return fmt.Errorf("Nil source pointer")
+	case dst == nil:
+		return fmt.Errorf("Nil destination pointer")
+	case len(*src) == 0:
+		*dst = (*dst)[:0]
+		return nil
+	}
+	if len(*dst) > 1 {
+		*dst = (*dst)[:1]
+	}
+	return PutMatrix(src, dst, true)
+}
+
+func GetColVctr(src *[]float64, dst *[][]float64, byval bool) error {
+	switch {
+	case src == nil:
+		return fmt.Errorf("Nil source pointer")
+	case dst == nil:
+		return fmt.Errorf("Nil destination pointer")
+	case len(*src) == 0:
+		*dst = (*dst)[:0]
+		return nil
+	}
+	src_len := len(*src)
+	if cap(*dst) < src_len {
+		*dst = make([][]float64, src_len)
+	}
+	if len(*dst) != src_len {
+		*dst = (*dst)[:src_len]
+	}
+	for i, x := range *src {
+		p := &(*dst)[i]
+		if byval {
+			*p = make([]float64, 1)
+			(*p)[0] = x
+		} else {
+			*p = (*src)[i:i+1]
+		}
+	}
+	return nil
+}
+
 func GetTmStmp() float64 { // Timestamp in milliseconds
 	return float64(time.Now().UnixNano()) / one_million
 }
@@ -50,11 +102,14 @@ func GetTmStmpUtc() float64 { // UTC timestamp in milliseconds
 }
 
 func GetMatrix(src *[][]float64, dst *[]float64, row_major bool) error {
-	if src == nil || len(*src) == 0 || (*src)[0] == nil {
-		return nil
-	}
-	if dst == nil {
+	switch {
+	case src == nil:
+		return fmt.Errorf("Nil source pointer")
+	case dst == nil:
 		return fmt.Errorf("Nil destination pointer")
+	case len(*src) == 0:
+		*dst = (*dst)[:0]
+		return nil
 	}
 	var nrows, ncols int
 	if row_major {
@@ -67,7 +122,7 @@ func GetMatrix(src *[][]float64, dst *[]float64, row_major bool) error {
 	if cap(*dst) < nrows * ncols {
 		*dst = make([]float64, nrows * ncols)
 	}
-	if len(*dst) < nrows * ncols {
+	if len(*dst) != nrows * ncols {
 		*dst = (*dst)[:nrows*ncols]
 	}
 	switch row_major {
@@ -76,25 +131,28 @@ func GetMatrix(src *[][]float64, dst *[]float64, row_major bool) error {
 			if len(r) != ncols {
 				return fmt.Errorf("Ragged matrix")
 			}
-			copy(r, (*dst)[i*ncols:(i+1)*ncols])
+			copy((*dst)[i*ncols:(i+1)*ncols], r)
 		}
 	case false:
 		for j, c := range(*src) {
 			if len(c) != nrows {
 				return fmt.Errorf("Ragged matrix")
 			}
-			copy(c, (*dst)[j*nrows:(j+1)*nrows])
+			copy((*dst)[j*nrows:(j+1)*nrows], c)
 		}
 	}
 	return nil
 }
 
 func PutMatrix(src *[]float64, dst *[][]float64, row_major bool) error {
-	if src == nil || len(*src) == 0 {
-		return nil
-	}
-	if dst == nil {
+	switch {
+	case src == nil:
+		return fmt.Errorf("Nil source pointer")
+	case dst == nil:
 		return fmt.Errorf("Nil destination pointer")
+	case len(*src) == 0:
+		*dst = (*dst)[:0]
+		return nil
 	}
 	src_len := len(*src)
 	if src_len % len(*dst) != 0 {
@@ -110,10 +168,10 @@ func PutMatrix(src *[]float64, dst *[][]float64, row_major bool) error {
 			if cap(r) < ncols {
 				*p = make([]float64, ncols)
 			}
-			if len(r) < ncols {
+			if len(r) != ncols {
 				*p = (*p)[:ncols]
 			}
-			copy((*src)[i*ncols:(i+1)*ncols], *p)
+			copy(*p, (*src)[i*ncols:(i+1)*ncols])
 		}
 	case false:
 		ncols = len(*dst)
@@ -123,10 +181,10 @@ func PutMatrix(src *[]float64, dst *[][]float64, row_major bool) error {
 			if cap(c) < nrows {
 				*p = make([]float64, nrows)
 			}
-			if len(c) < nrows {
+			if len(c) != nrows {
 				*p = (*p)[:nrows]
 			}
-			copy((*src)[j*nrows:(j+1)*nrows], *p)
+			copy(*p, (*src)[j*nrows:(j+1)*nrows])
 		}
 	}
 	return nil
@@ -246,6 +304,12 @@ func Ncols(m *mat.Dense) int {
 	}
 	_, nc := m.Dims()
 	return nc
+}
+
+func RawData(m *mat.Dense) []float64 {
+	var g blas64.General
+	g = m.RawMatrix()
+	return g.Data
 }
 
 func SetCol(m *mat.Dense, col int, val float64) {
