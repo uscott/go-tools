@@ -29,10 +29,9 @@ func Clamp(x, lb, ub float64) float64 {
 	return math.Min(ub, math.Max(lb, x))
 }
 
-func Copy(m *mat.Dense) *mat.Dense {
-	var buf []float64 = RawData(m)
+func CopyMatrix(m *mat.Dense) *mat.Dense {
 	nr, nc := m.Dims()
-	return mat.NewDense(nr, nc, buf)
+	return mat.NewDense(nr, nc, RawData(m))
 }
 
 func CopyMap(m_in map[string]interface{}) map[string]interface{} {
