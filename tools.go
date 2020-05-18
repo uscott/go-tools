@@ -30,7 +30,7 @@ func Clamp(x, lb, ub float64) float64 {
 }
 
 func Copy(m *mat.Dense) *mat.Dense {
-	buf []float64 = RawData(m)
+	var buf []float64 = RawData(m)
 	nr, nc := m.Dims()
 	return mat.NewDense(nr, nc, buf)
 }
@@ -87,7 +87,7 @@ func GetColVctr(src *[]float64, dst *[][]float64, byval bool) error {
 			*p = make([]float64, 1)
 			(*p)[0] = x
 		} else {
-			*p = (*src)[i:i+1]
+			*p = (*src)[i : i+1]
 		}
 	}
 	return nil
@@ -119,22 +119,22 @@ func GetMatrix(src *[][]float64, dst *[]float64, row_major bool) error {
 		ncols = len(*src)
 		nrows = len((*src)[0])
 	}
-	if cap(*dst) < nrows * ncols {
-		*dst = make([]float64, nrows * ncols)
+	if cap(*dst) < nrows*ncols {
+		*dst = make([]float64, nrows*ncols)
 	}
-	if len(*dst) != nrows * ncols {
+	if len(*dst) != nrows*ncols {
 		*dst = (*dst)[:nrows*ncols]
 	}
 	switch row_major {
 	case true:
-		for i, r := range (*src) {
+		for i, r := range *src {
 			if len(r) != ncols {
 				return fmt.Errorf("Ragged matrix")
 			}
 			copy((*dst)[i*ncols:(i+1)*ncols], r)
 		}
 	case false:
-		for j, c := range(*src) {
+		for j, c := range *src {
 			if len(c) != nrows {
 				return fmt.Errorf("Ragged matrix")
 			}
@@ -155,7 +155,7 @@ func PutMatrix(src *[]float64, dst *[][]float64, row_major bool) error {
 		return nil
 	}
 	src_len := len(*src)
-	if src_len % len(*dst) != 0 {
+	if src_len%len(*dst) != 0 {
 		return fmt.Errorf("Matrix dimension incompatible with slice source length")
 	}
 	var nrows, ncols int
