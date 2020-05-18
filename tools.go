@@ -2,6 +2,7 @@ package tools
 
 import (
 	"errors"
+	"fmt"
 	"gonum.org/v1/gonum/mat"
 	"math"
 	"time"
@@ -46,6 +47,89 @@ func GetTmStmp() float64 { // Timestamp in milliseconds
 
 func GetTmStmpUtc() float64 { // UTC timestamp in milliseconds
 	return float64(time.Now().UTC().UnixNano()) / one_million
+}
+
+func get_matrix(src *[][]float64, dst *[]float64, row_major bool) error {
+	if src == nil || len(*src) == 0 || (*src)[0] == nil {
+		return nil
+	}
+	if dst == nil {
+		return fmt.Errorf("Nil destination pointer")
+	}
+	var nrows, ncols int
+	if row_major {
+		nrows = len(*src)
+		ncols = len((*src)[0])
+	} else {
+		ncols = len(*src)
+		nrows = len((*src)[0])
+	}
+	if cap(*dst) < nrows * ncols {
+		*dst = make([]float64, nrows * ncols)
+	}
+	if len(*dst) < nrows * ncols {
+		*dst = (*dst)[:nrows*ncols]
+	}
+	switch row_major {
+	case true:
+		for i, r := range (*src) {
+			if len(r) != ncols {
+				return fmt.Errorf("Ragged matrix")
+			}
+			copy(r, (*dst)[i*ncols:(i+1)*ncols])
+		}
+	case false:
+		for j, c := range(*src) {
+			if len(c) != nrows {
+				return fmt.Errorf("Ragged matrix")
+			}
+			copy(c, (*dst)[j*nrows:(j+1)*nrows])
+		}
+	}
+	return nil
+}
+
+func put_matrix(src *[]float64, dst *[][]float64, row_major bool) error {
+	if src == nil || len(*src) == 0 {
+		return nil
+	}
+	if dst == nil {
+		return fmt.Errorf("Nil destination pointer")
+	}
+	src_len := len(*src)
+	if src_len % len(*dst) != 0 {
+		return fmt.Errorf("Matrix dimension incompatible with slice source length")
+	}
+	var nrows, ncols int
+	switch row_major {
+	case true:
+		nrows = len(*dst)
+		ncols = src_len / nrows
+		for i, r := range *dst {
+			p := &(*dst)[i]
+			if cap(r) < ncols {
+				*p = make([]float64, ncols)
+			}
+			if len(r) < ncols {
+				*p = (*p)[:ncols]
+			}
+			copy((*src)[i*ncols:(i+1)*ncols], *p)
+		}
+	case false:
+		ncols = len(*dst)
+		nrows = src_len / ncols
+		for j, c := range *dst {
+			p := &(*dst)[j]
+			if cap(c) < nrows {
+				*p = make([]float64, nrows)
+			}
+			if len(c) < nrows {
+				*p = (*p)[:nrows]
+			}
+			copy((*src)[j*nrows:(j+1)*nrows], *p)
+		}
+	}
+	return nil
 }
 
 func Fmax(args ...float64) (maxval float64) {
@@ -110,11 +194,38 @@ func Integrate(f func(float64) float64, lb float64, ub float64, n uint) float64 
 	x0, val0 = lb, f(lb)
 	s := 0.0
 	for i := 0; uint(i) < n; i++ {
-		x1, val1 = x0 + dx, f(x0 + dx)
+		x1, val1 = x0+dx, f(x0+dx)
 		s += 0.5 * (val0 + val1) * dx
 		x0, val0 = x1, val1
 	}
 	return s
+}
+
+func PrintMatrix(
+	m *mat.Dense, transpose bool, scale float64, format string) {
+
+	var ub1, ub2 int
+	var x float64
+	if m == nil {
+		fmt.Println(m)
+		return
+	}
+	if transpose {
+		ub2, ub1 = m.Dims()
+	} else {
+		ub1, ub2 = m.Dims()
+	}
+	for i := 0; i < ub1; i++ {
+		for j := 0; j < ub2; j++ {
+			if transpose {
+				x = m.At(j, i) * scale
+			} else {
+				x = m.At(i, j) * scale
+			}
+			fmt.Printf(format, x)
+		}
+		fmt.Println()
+	}
 }
 
 func NowUtc() time.Time {
