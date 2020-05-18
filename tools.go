@@ -1,12 +1,15 @@
 package tools
 
 import (
+	"errors"
 	"gonum.org/v1/gonum/mat"
 	"math"
 	"time"
 )
 
 const one_million = 1000 * 1000
+
+var TYPE_CONVERSION_ERROR = errors.New("TYPE CONVERSION ERROR")
 
 func ChunkCl(x, chk_sz float64) float64 {
 	return chk_sz * math.Ceil(x/chk_sz)
@@ -99,6 +102,19 @@ func Imin(args ...int) (minval int) {
 		}
 	}
 	return
+}
+
+func Integrate(f func(float64) float64, lb float64, ub float64, n uint) float64 {
+	dx := (ub - lb) / float64(n)
+	var x0, x1, val0, val1 float64
+	x0, val0 = lb, f(lb)
+	s := 0.0
+	for i := 0; uint(i) < n; i++ {
+		x1, val1 = x0 + dx, f(x0 + dx)
+		s += 0.5 * (val0 + val1) * dx
+		x0, val0 = x1, val1
+	}
+	return s
 }
 
 func NowUtc() time.Time {
