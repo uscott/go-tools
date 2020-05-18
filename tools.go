@@ -49,7 +49,7 @@ func GetTmStmpUtc() float64 { // UTC timestamp in milliseconds
 	return float64(time.Now().UTC().UnixNano()) / one_million
 }
 
-func get_matrix(src *[][]float64, dst *[]float64, row_major bool) error {
+func GetMatrix(src *[][]float64, dst *[]float64, row_major bool) error {
 	if src == nil || len(*src) == 0 || (*src)[0] == nil {
 		return nil
 	}
@@ -89,7 +89,7 @@ func get_matrix(src *[][]float64, dst *[]float64, row_major bool) error {
 	return nil
 }
 
-func put_matrix(src *[]float64, dst *[][]float64, row_major bool) error {
+func PutMatrix(src *[]float64, dst *[][]float64, row_major bool) error {
 	if src == nil || len(*src) == 0 {
 		return nil
 	}
