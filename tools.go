@@ -309,6 +309,9 @@ func Ncols(m *mat.Dense) int {
 }
 
 func RawDataRef(m *mat.Dense) []float64 {
+	if m == nil {
+		return []float64{}
+	}
 	var g blas64.General
 	g = m.RawMatrix()
 	return g.Data
