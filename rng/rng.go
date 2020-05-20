@@ -20,7 +20,7 @@ func (rng RNG) Uint64() uint64 {
 }
 
 func NewRngSeeded(s int) RNG {
-	return RNG{rand.New(rand.NewSource(s + time.Now().UnixNano()))}
+	return RNG{rand.New(rand.NewSource(int64(s) + time.Now().UnixNano()))}
 }
 
 func NewRng() RNG {
