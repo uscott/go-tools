@@ -11,7 +11,8 @@ import (
 
 const one_million = 1000 * 1000
 
-var TYPE_CONVERSION_ERROR = errors.New("TYPE CONVERSION ERROR")
+var ERR_CONVERSION = errors.New("CONVERSION ERROR")
+var ERR_NIL_POINTER = errors.New("NIL POINTER")
 
 func ChunkCl(x, chk_sz float64) float64 {
 	return chk_sz * math.Ceil(x/chk_sz)
