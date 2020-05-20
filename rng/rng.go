@@ -1,6 +1,7 @@
 package rng
 
 import (
+	"github.com/uscott/gotools/misc"
 	"gonum.org/v1/gonum/mat"
 	"math/rand"
 	"time"
