@@ -19,8 +19,12 @@ func (rng RNG) Uint64() uint64 {
 	return rng.Rand.Uint64()
 }
 
+func NewRngSeeded(s int) RNG {
+	return RNG{rand.New(rand.NewSource(s + time.Now().UnixNano()))}
+}
+
 func NewRng() RNG {
-	return RNG{rand.New(rand.NewSource(time.Now().UnixNano()))}
+	return NewRngSeeded(0)
 }
 
 func NormRand(r RNG, chol *mat.TriDense, eps []float64) error {
