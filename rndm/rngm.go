@@ -1,4 +1,4 @@
-package rng
+package rndm
 
 import (
 	"github.com/uscott/gotools/misc"
