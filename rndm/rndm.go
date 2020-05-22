@@ -2,33 +2,31 @@ package rndm
 
 import (
 	"github.com/uscott/gotools/misc"
-	"golang.org/x/exp/rand"
 	"gonum.org/v1/gonum/mat"
-	// "math/rand"
-	// "time"
+	"math/rand"
+	"time"
 )
 
 type RNG struct {
 	*rand.Rand
-	Source 	*rand.LockedSource
+	Source *rand.Source
 }
 
 func (rng RNG) Seed(seed uint64) {
-	rng.Source.Seed(seed)
+	(*rng.Source).Seed(int64(seed))
 }
 
 func (rng RNG) Uint64() uint64 {
 	return rng.Rand.Uint64()
 }
 
-// func NewRngSeeded(s uint64) RNG {
-// 	p.Seed(s + uint64(time.Now().UnixNano()))
-// }
+func NewRngSeeded(seed int) RNG {
+	src := rand.NewSource(int64(seed) + time.Now().UnixNano())
+ 	return RNG{rand.New(src), &src}
+}
 
 func NewRng() RNG {
-	var src = rand.LockedSource{}
-	var p = &src
-	return RNG{rand.New(p), p}
+	return NewRngSeeded(0)
 }
 
 func NormRand(r RNG, chol *mat.TriDense, eps []float64) error {
