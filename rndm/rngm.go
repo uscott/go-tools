@@ -2,25 +2,30 @@ package rndm
 
 import (
 	"github.com/uscott/gotools/misc"
+	"golang.org/x/exp/rand"
 	"gonum.org/v1/gonum/mat"
-	"math/rand"
+	// "math/rand"
 	"time"
 )
 
 type RNG struct {
 	*rand.Rand
+	Source 	*rand.LockedSource
 }
 
 func (rng RNG) Seed(seed uint64) {
-	rng.Rand.Seed(int64(seed))
+	rng.Source.Seed(seed)
 }
 
 func (rng RNG) Uint64() uint64 {
 	return rng.Rand.Uint64()
 }
 
-func NewRngSeeded(s int) RNG {
-	return RNG{rand.New(rand.NewSource(int64(s) + time.Now().UnixNano()))}
+func NewRngSeeded(s uint64) RNG {
+	var src = rand.LockedSource{}
+	var p = &src
+	p.Seed(s + uint64(time.Now().UnixNano()))
+	return RNG{rand.New(p), p}
 }
 
 func NewRng() RNG {
