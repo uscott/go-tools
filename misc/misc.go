@@ -249,6 +249,18 @@ func Imin(args ...int) (minval int) {
 	return
 }
 
+func Icl(x float64) int {
+	return int(math.Ceil(x)))
+}
+
+func Ifl(x float64) int {
+	return int(math.Floor(x)))
+}
+
+func Ird(x float64) int {
+	return int(math.Round(x))
+}
+
 func Integrate(f func(float64) float64, lb float64, ub float64, n uint) float64 {
 	dx := (ub - lb) / float64(n)
 	var x0, x1, val0, val1 float64
