@@ -193,6 +193,10 @@ func PutMatrix(src *[]float64, dst *[][]float64, row_major bool) error {
 	return nil
 }
 
+func Fdiv(numerator, denominator int) float64 {
+	return float64(numerator) / float64(denominator)
+}
+
 func Fmax(args ...float64) (maxval float64) {
 	if len(args) == 0 {
 		maxval = math.Inf(-1)
