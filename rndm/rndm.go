@@ -5,7 +5,7 @@ import (
 	"golang.org/x/exp/rand"
 	"gonum.org/v1/gonum/mat"
 	// "math/rand"
-	"time"
+	// "time"
 )
 
 type RNG struct {
