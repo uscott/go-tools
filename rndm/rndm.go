@@ -7,13 +7,23 @@ import (
 	"time"
 )
 
+type DfltSrc struct {
+}
+
 type RNG struct {
 	*rand.Rand
-	Source *rand.Source
+}
+
+func (src DfltSrc) Seed(seed uint64) {
+	rand.Seed(int64(seed))
+}
+
+func (src DfltSrc) Uint64() uint64 {
+	return rand.Uint64()
 }
 
 func (rng RNG) Seed(seed uint64) {
-	(*rng.Source).Seed(int64(seed))
+	rng.Rand.Seed(int64(seed))
 }
 
 func (rng RNG) Uint64() uint64 {
@@ -22,11 +32,7 @@ func (rng RNG) Uint64() uint64 {
 
 func NewRngSeeded(seed int) RNG {
 	src := rand.NewSource(int64(seed) + time.Now().UnixNano())
- 	return RNG{rand.New(src), &src}
-}
-
-func NewRng() RNG {
-	return NewRngSeeded(0)
+ 	return RNG{rand.New(src)}
 }
 
 func NormRand(r RNG, chol *mat.TriDense, eps []float64) error {
