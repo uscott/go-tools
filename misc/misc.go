@@ -250,11 +250,11 @@ func Imin(args ...int) (minval int) {
 }
 
 func Icl(x float64) int {
-	return int(math.Ceil(x)))
+	return int(math.Ceil(x))
 }
 
 func Ifl(x float64) int {
-	return int(math.Floor(x)))
+	return int(math.Floor(x))
 }
 
 func Ird(x float64) int {
