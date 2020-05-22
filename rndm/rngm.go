@@ -21,15 +21,14 @@ func (rng RNG) Uint64() uint64 {
 	return rng.Rand.Uint64()
 }
 
-func NewRngSeeded(s uint64) RNG {
-	var src = rand.LockedSource{}
-	var p = &src
-	p.Seed(s + uint64(time.Now().UnixNano()))
-	return RNG{rand.New(p), p}
-}
+// func NewRngSeeded(s uint64) RNG {
+// 	p.Seed(s + uint64(time.Now().UnixNano()))
+// }
 
 func NewRng() RNG {
-	return NewRngSeeded(0)
+	var src = rand.LockedSource{}
+	var p = &src
+	return RNG{rand.New(p), p}
 }
 
 func NormRand(r RNG, chol *mat.TriDense, eps []float64) error {
