@@ -1,4 +1,4 @@
-package mathext
+package mathx
 
 import (
 	"math"
