@@ -2,7 +2,7 @@ package tools
 
 import (
 	"fmt"
-	"github.com/uscott/gotools/mathext"
+	"github.com/uscott/gotools/mathx"
 	"github.com/uscott/gotools/misc"
 	"math"
 	"testing"
@@ -11,7 +11,7 @@ import (
 func Test_Math(t *testing.T) {
 	x := 9
 	n := uint(13)
-	if mathext.Ipow(x, n) != int(math.Pow(float64(x), float64(n))) {
+	if mathx.Ipow(x, n) != int(math.Pow(float64(x), float64(n))) {
 		t.Error("Error in Ipow")
 	}
 }
