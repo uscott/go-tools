@@ -2,9 +2,19 @@ package tools
 
 import (
 	"fmt"
+	"github.com/uscott/gotools/mathext"
 	"github.com/uscott/gotools/misc"
+	"math"
 	"testing"
 )
+
+func Test_Math(t *testing.T) {
+	x := 9
+	n := uint(13)
+	if mathext.Ipow(x, n) != int(math.Pow(float64(x), float64(n))) {
+		t.Error("Error in Ipow")
+	}
+}
 
 func Test_PutGetMatrix(t *testing.T) {
 	var u, v []float64

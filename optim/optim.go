@@ -1,7 +1,7 @@
 package optim
 
 import (
-	"gonum.org/v1/gonum/optimize"	
+	"gonum.org/v1/gonum/optimize"
 )
 
 type NM struct {

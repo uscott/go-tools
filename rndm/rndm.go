@@ -1,7 +1,7 @@
 package rndm
 
 import (
-	"github.com/uscott/gotools/misc"
+	"github.com/uscott/gotools/errs"
 	"gonum.org/v1/gonum/mat"
 	"math/rand"
 	"time"
@@ -32,12 +32,12 @@ func (rng RNG) Uint64() uint64 {
 
 func NewRngSeeded(seed int) RNG {
 	src := rand.NewSource(int64(seed) + time.Now().UnixNano())
- 	return RNG{rand.New(src)}
+	return RNG{rand.New(src)}
 }
 
 func NormRand(r RNG, chol *mat.TriDense, eps []float64) error {
 	if chol == nil || r.Rand == nil || eps == nil {
-		return misc.ERR_NIL_POINTER
+		return errs.NilPtr
 	}
 	n, _ := chol.Dims()
 	u := mat.NewDense(n, 1, eps)
