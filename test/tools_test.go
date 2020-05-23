@@ -3,7 +3,7 @@ package tools
 import (
 	"fmt"
 	"github.com/uscott/gotools/mathx"
-	"github.com/uscott/gotools/misc"
+	"github.com/uscott/gotools/mtrx"
 	"math"
 	"testing"
 )
@@ -30,7 +30,7 @@ func Test_PutGetMatrix(t *testing.T) {
 	for i := 0; i < len(m); i++ {
 		m[i] = make([]float64, 1)
 	}
-	misc.PutMatrix(&u, &m, true)
+	mtrx.PutMatrix(&u, &m, true)
 	fmt.Println(u)
 	for _, r := range m {
 		for _, x := range r {
@@ -47,7 +47,7 @@ func Test_PutGetMatrix(t *testing.T) {
 			t.Error("Wrong")
 		}
 	}
-	misc.GetMatrix(&m, &v, true)
+	mtrx.GetMatrix(&m, &v, true)
 	fmt.Println(v)
 	if len(v) != len(u) || cap(v) != cap(u) {
 		t.Error("Mismatched lengths")
@@ -80,7 +80,7 @@ func Test_GetRowVctr(t *testing.T) {
 	fmt.Println(v)
 	var rv = make([][]float64, 5)
 	var err error
-	err = misc.GetRowVctr(&v, &rv)
+	err = mtrx.GetRowVctr(&v, &rv)
 	if err != nil {
 		t.Error(err)
 	}
@@ -111,10 +111,10 @@ func Test_GetColVctr(t *testing.T) {
 	v[2] = 4
 	var cv_val, cv_ref = make([][]float64, 2), make([][]float64, 2)
 	var err error
-	if err = misc.GetColVctr(&v, &cv_val, true); err != nil {
+	if err = mtrx.GetColVctr(&v, &cv_val, true); err != nil {
 		t.Error(err)
 	}
-	if err = misc.GetColVctr(&v, &cv_ref, false); err != nil {
+	if err = mtrx.GetColVctr(&v, &cv_ref, false); err != nil {
 		t.Error(err)
 	}
 	if len(cv_val) != len(v) || len(cv_ref) != len(v) {
