@@ -20,6 +20,17 @@ func Clamp(x, lb, ub float64) float64 {
 	return math.Min(ub, math.Max(lb, x))
 }
 
+func Iclamp(x, lb, ub int) int {
+	switch {
+	case x < lb:
+		return lb
+	case ub < x:
+		return ub
+	default:
+		return x
+	}
+}
+
 func Fdiv(numerator, denominator int) float64 {
 	return float64(numerator) / float64(denominator)
 }
