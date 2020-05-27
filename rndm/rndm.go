@@ -46,6 +46,6 @@ func NormRand(chol *mat.TriDense, eps []float64) error {
 	for i := range slc {
 		slc[i] = rand.NormFloat64()
 	}
-	u.Mul(chol, u)
+	u.Mul(chol.T(), u)
 	return nil
 }
