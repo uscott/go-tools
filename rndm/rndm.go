@@ -71,6 +71,6 @@ func (rng *MvRng) MvRand(chol *mat.TriDense, eps []float64) error {
 	for i := range slc {
 		slc[i] = rng.Normal.Rand()
 	}
-	u.Mul(chol, u)
+	u.Mul(chol.T(), u)
 	return nil
 }
