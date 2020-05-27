@@ -2,6 +2,7 @@ package mtrx
 
 import (
 	"fmt"
+
 	"github.com/uscott/gotools/errs"
 	"gonum.org/v1/gonum/blas/blas64"
 	"gonum.org/v1/gonum/mat"
@@ -18,7 +19,7 @@ func CopyMatrix(m *mat.Dense) *mat.Dense {
 func GetRowVctr(src *[]float64, dst *[][]float64) error {
 	switch {
 	case src == nil || dst == nil:
-		return errs.NilPtr
+		return errs.ErrNilPtr
 	case len(*src) == 0:
 		*dst = (*dst)[:0]
 		return nil
@@ -32,7 +33,7 @@ func GetRowVctr(src *[]float64, dst *[][]float64) error {
 func GetColVctr(src *[]float64, dst *[][]float64, byval bool) error {
 	switch {
 	case src == nil || dst == nil:
-		return errs.NilPtr
+		return errs.ErrNilPtr
 	case len(*src) == 0:
 		*dst = (*dst)[:0]
 		return nil
@@ -56,18 +57,18 @@ func GetColVctr(src *[]float64, dst *[][]float64, byval bool) error {
 	return nil
 }
 
-func GetMatrix(src *[][]float64, dst *[]float64, row_major bool) error {
+func GetMatrix(src *[][]float64, dst *[]float64, rowMajor bool) error {
 	switch {
 	case src == nil:
-		return errs.NilPtr
+		return errs.ErrNilPtr
 	case dst == nil:
-		return errs.NilPtr
+		return errs.ErrNilPtr
 	case len(*src) == 0:
 		*dst = (*dst)[:0]
 		return nil
 	}
 	var nrows, ncols int
-	if row_major {
+	if rowMajor {
 		nrows = len(*src)
 		ncols = len((*src)[0])
 	} else {
@@ -80,7 +81,7 @@ func GetMatrix(src *[][]float64, dst *[]float64, row_major bool) error {
 	if len(*dst) != nrows*ncols {
 		*dst = (*dst)[:nrows*ncols]
 	}
-	switch row_major {
+	switch rowMajor {
 	case true:
 		for i, r := range *src {
 			if len(r) != ncols {
@@ -115,12 +116,12 @@ func Ncols(m *mat.Dense) int {
 	return nc
 }
 
-func PutMatrix(src *[]float64, dst *[][]float64, row_major bool) error {
+func PutMatrix(src *[]float64, dst *[][]float64, rowMajor bool) error {
 	switch {
 	case src == nil:
-		return errs.NilPtr
+		return errs.ErrNilPtr
 	case dst == nil:
-		return errs.NilPtr
+		return errs.ErrNilPtr
 	case len(*src) == 0:
 		*dst = (*dst)[:0]
 		return nil
@@ -130,7 +131,7 @@ func PutMatrix(src *[]float64, dst *[][]float64, row_major bool) error {
 		return fmt.Errorf("Matrix dimension incompatible with slice source length")
 	}
 	var nrows, ncols int
-	switch row_major {
+	switch rowMajor {
 	case true:
 		nrows = len(*dst)
 		ncols = src_len / nrows

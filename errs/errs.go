@@ -4,5 +4,8 @@ import (
 	"errors"
 )
 
-var Conversion = errors.New("Type Conversion Error")
-var NilPtr = errors.New("Nil Pointer")
+// Error values
+var (
+	ErrConversion = errors.New("Type Conversion Error")
+	ErrNilPtr     = errors.New("Nil Pointer")
+)

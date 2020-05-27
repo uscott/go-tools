@@ -1,10 +1,11 @@
 package rndm
 
 import (
-	"github.com/uscott/gotools/errs"
-	"gonum.org/v1/gonum/mat"
 	"math/rand"
 	"time"
+
+	"github.com/uscott/gotools/errs"
+	"gonum.org/v1/gonum/mat"
 )
 
 type DfltSrc struct {
@@ -37,12 +38,12 @@ func NewRngSeeded(seed int) RNG {
 
 func NormRand(r RNG, chol *mat.TriDense, eps []float64) error {
 	if chol == nil || r.Rand == nil || eps == nil {
-		return errs.NilPtr
+		return errs.ErrNilPtr
 	}
 	n, _ := chol.Dims()
 	u := mat.NewDense(n, 1, eps)
 	slc := u.RawMatrix().Data
-	for i, _ := range slc {
+	for i := range slc {
 		slc[i] = r.Rand.NormFloat64()
 	}
 	u.Mul(chol, u)
