@@ -36,15 +36,15 @@ func NewRngSeeded(seed int) RNG {
 	return RNG{rand.New(src)}
 }
 
-func NormRand(r RNG, chol *mat.TriDense, eps []float64) error {
-	if chol == nil || r.Rand == nil || eps == nil {
+func NormRand(chol *mat.TriDense, eps []float64) error {
+	if chol == nil || eps == nil {
 		return errs.ErrNilPtr
 	}
 	n, _ := chol.Dims()
 	u := mat.NewDense(n, 1, eps)
 	slc := u.RawMatrix().Data
 	for i := range slc {
-		slc[i] = r.Rand.NormFloat64()
+		slc[i] = rand.NormFloat64()
 	}
 	u.Mul(chol, u)
 	return nil
