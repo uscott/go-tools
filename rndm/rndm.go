@@ -23,10 +23,6 @@ func (src DfltSrc) Uint64() uint64 {
 	return rand.Uint64()
 }
 
-func (src DfltSrc) NormFloat64() float64 {
-	return rand.NormFloat64()
-}
-
 func (rng RNG) Seed(seed uint64) {
 	rng.Rand.Seed(int64(seed))
 }
@@ -40,7 +36,7 @@ func NewRngSeeded(seed int) RNG {
 	return RNG{rand.New(src)}
 }
 
-func (src DfltSrc) NormRand(chol *mat.TriDense, eps []float64) error {
+func MvRand(chol *mat.TriDense, rng func() float64, eps []float64) error {
 	if chol == nil || eps == nil {
 		return errs.ErrNilPtr
 	}
@@ -48,8 +44,8 @@ func (src DfltSrc) NormRand(chol *mat.TriDense, eps []float64) error {
 	u := mat.NewDense(n, 1, eps)
 	slc := u.RawMatrix().Data
 	for i := range slc {
-		slc[i] = src.NormFloat64()
+		slc[i] = rng()
 	}
-	u.Mul(chol.T(), u)
+	u.Mul(chol, u)
 	return nil
 }
