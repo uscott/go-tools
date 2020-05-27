@@ -1,6 +1,7 @@
 package rndm
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/uscott/gotools/errs"
@@ -61,16 +62,30 @@ func NewRng() *RNG {
 	return NewRngSeeded(uint64(time.Now().UnixNano()))
 }
 
-func (rng *MvRng) MvRand(chol *mat.TriDense, eps []float64) error {
-	if chol == nil || eps == nil {
+func (rng *MvRng) MvRand(chol *mat.TriDense, upper bool, eps []float64) error {
+	if chol == nil {
 		return errs.ErrNilPtr
 	}
-	n, _ := chol.Dims()
-	u := mat.NewDense(n, 1, eps)
-	slc := u.RawMatrix().Data
-	for i := range slc {
-		slc[i] = rng.Normal.Rand()
+	var (
+		n int
+		u *mat.Dense
+	)
+	n, _ = chol.Dims()
+	if cap(eps) < n {
+		return fmt.Errorf("Buffer has insufficient capacity")
 	}
-	u.Mul(chol.T(), u)
+	if upper {
+		u = mat.NewDense(1, n, eps)
+	} else {
+		u = mat.NewDense(n, 1, eps)
+	}
+	for i := range eps {
+		eps[i] = rng.Normal.Rand()
+	}
+	if upper {
+		u.Mul(u, chol)
+	} else {
+		u.Mul(chol, u)
+	}
 	return nil
 }
