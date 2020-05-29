@@ -6,9 +6,10 @@ import (
 
 // Error values
 var (
-	ErrCapacity    = errors.New("Insufficient Capacity")
-	ErrConversion  = errors.New("Type Conversion Error")
-	ErrDimMismatch = errors.New("Dimension Mismatch")
-	ErrKey         = errors.New("Map Key Error")
-	ErrNilPtr      = errors.New("Nil Pointer")
+	ErrCapacity    = errors.New("insufficient capacity")
+	ErrConversion  = errors.New("type conversion error")
+	ErrDivByZero   = errors.New("divide by zero")
+	ErrDimMismatch = errors.New("dimension mismatch")
+	ErrKey         = errors.New("map key error")
+	ErrNilPtr      = errors.New("nil pointer")
 )
