@@ -2,10 +2,13 @@ package tools
 
 import (
 	"fmt"
-	"github.com/uscott/gotools/mathx"
-	"github.com/uscott/gotools/mtrx"
 	"math"
 	"testing"
+
+	"github.com/uscott/gotools/mathx"
+	"github.com/uscott/gotools/misc"
+	"github.com/uscott/gotools/mtrx"
+	"golang.org/x/exp/rand"
 )
 
 func Test_Math(t *testing.T) {
@@ -118,18 +121,45 @@ func Test_GetColVctr(t *testing.T) {
 		t.Error(err)
 	}
 	if len(cv_val) != len(v) || len(cv_ref) != len(v) {
-		t.Error()
+		t.Failed()
 	}
 	for i, x := range v {
 		if x != cv_val[i][0] || x != cv_ref[i][0] {
-			t.Error()
+			t.Failed()
 		}
 	}
 	cv_ref[0][0] = 10
 	if v[0] != 10 {
-		t.Error()
+		t.Failed()
 	}
 	if cv_val[0][0] == 10 {
-		t.Error()
+		t.Failed()
+	}
+}
+
+func Test_SlcRmStr(t *testing.T) {
+	x := []string{"a", "a", "a", "a"}
+	misc.SlcRmStr(&x, "a")
+	if len(x) != 0 {
+		t.Failed()
+	}
+	fmt.Println(x)
+	x = []string{"a", "a", "b", "c"}
+	misc.SlcRmStr(&x, "a")
+	if len(x) != 2 {
+		t.Failed()
+	}
+	fmt.Println(x)
+	x = make([]string, 100)
+	for i := 0; i < 20; i++ {
+		x[i] = "yes"
+	}
+	for i := 20; i < len(x); i++ {
+		x[i] = "no"
+	}
+	rand.Shuffle(len(x), func(i, j int) { x[i], x[j] = x[j], x[i] })
+	misc.SlcRmStr(&x, "no")
+	if len(x) != 20 {
+		t.Failed()
 	}
 }
