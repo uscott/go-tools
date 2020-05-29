@@ -10,6 +10,8 @@ var (
 	ErrConversion  = errors.New("type conversion error")
 	ErrDivByZero   = errors.New("divide by zero")
 	ErrDimMismatch = errors.New("dimension mismatch")
+	ErrInf         = errors.New("+/-Infinity")
 	ErrKey         = errors.New("map key error")
+	ErrNaN         = errors.New("NaN")
 	ErrNilPtr      = errors.New("nil pointer")
 )
