@@ -2,6 +2,7 @@ package mathx
 
 import (
 	"math"
+	"time"
 )
 
 func ChunkCl(x, chk_sz float64) float64 {
@@ -85,6 +86,36 @@ func Imin(args ...int) (minval int) {
 		for _, x := range args[1:] {
 			if x < minval {
 				minval = x
+			}
+		}
+	}
+	return
+}
+
+// Tmax returns the maximum of its arguments
+func Tmax(args ...time.Time) (maxval time.Time) {
+	if args == nil {
+		maxval = time.Time{}
+	} else {
+		maxval = args[0]
+		for _, t := range args[1:] {
+			if t.After(maxval) {
+				maxval = t
+			}
+		}
+	}
+	return
+}
+
+// Tmin returns the minimum of its arguments
+func Tmin(args ...time.Time) (minval time.Time) {
+	if args == nil {
+		minval = time.Date(9999, 12, 31, 23, 59, 59, 0, time.Local)
+	} else {
+		minval = args[0]
+		for _, t := range args[1:] {
+			if t.Before(minval) {
+				minval = t
 			}
 		}
 	}
