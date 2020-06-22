@@ -5,6 +5,11 @@ import (
 	"time"
 )
 
+// Clamp is an alias for Fclamp
+var (
+	Clamp = Fclamp
+)
+
 func ChunkCl(x, chk_sz float64) float64 {
 	return chk_sz * math.Ceil(x/chk_sz)
 }
@@ -17,10 +22,19 @@ func ChunkRd(x, chk_sz float64) float64 {
 	return chk_sz * math.Round(x/chk_sz)
 }
 
-func Clamp(x, lb, ub float64) float64 {
-	return math.Min(ub, math.Max(lb, x))
+// Fclamp constrains x between lb and ub
+func Fclamp(x, lb, ub float64) float64 {
+	switch {
+	case x < lb:
+		return lb
+	case ub < x:
+		return ub
+	default:
+		return x
+	}
 }
 
+// Iclamp constrains x between lb and ub
 func Iclamp(x, lb, ub int) int {
 	switch {
 	case x < lb:
@@ -32,10 +46,12 @@ func Iclamp(x, lb, ub int) int {
 	}
 }
 
+// Fdiv returns the float64 division of integer arguments
 func Fdiv(numerator, denominator int) float64 {
 	return float64(numerator) / float64(denominator)
 }
 
+// Fmax returns the max of float64 arguments
 func Fmax(args ...float64) (maxval float64) {
 	if len(args) == 0 {
 		maxval = math.Inf(-1)
@@ -50,6 +66,7 @@ func Fmax(args ...float64) (maxval float64) {
 	return
 }
 
+// Fmin returns the min of float64 arguments
 func Fmin(args ...float64) (minval float64) {
 	if len(args) == 0 {
 		minval = math.Inf(1)
@@ -64,8 +81,9 @@ func Fmin(args ...float64) (minval float64) {
 	return
 }
 
+// Imax returns the max of integer arguments
 func Imax(args ...int) (maxval int) {
-	if args == nil {
+	if len(args) == 0 {
 		maxval = math.MinInt64
 	} else {
 		maxval = args[0]
@@ -78,8 +96,9 @@ func Imax(args ...int) (maxval int) {
 	return
 }
 
+// Imin returns the minimum of integer arguments
 func Imin(args ...int) (minval int) {
-	if args == nil {
+	if len(args) == 0 {
 		minval = math.MaxInt64
 	} else {
 		minval = args[0]
@@ -94,7 +113,7 @@ func Imin(args ...int) (minval int) {
 
 // Tmax returns the maximum of its arguments
 func Tmax(args ...time.Time) (maxval time.Time) {
-	if args == nil {
+	if len(args) == 0 {
 		maxval = time.Time{}
 	} else {
 		maxval = args[0]
@@ -109,7 +128,7 @@ func Tmax(args ...time.Time) (maxval time.Time) {
 
 // Tmin returns the minimum of its arguments
 func Tmin(args ...time.Time) (minval time.Time) {
-	if args == nil {
+	if len(args) == 0 {
 		minval = time.Date(9999, 12, 31, 23, 59, 59, 0, time.Local)
 	} else {
 		minval = args[0]
