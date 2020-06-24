@@ -33,3 +33,10 @@ func StrSlcEquals(s1 []string, s2 []string) bool {
 	}
 	return true
 }
+
+// FltRev reverses the order of the slice of float64s
+func FltRev(slc []float64) {
+	for i, j := 0, len(slc)-1; i < j; i, j = i+1, j-1 {
+		slc[i], slc[j] = slc[j], slc[i]
+	}
+}
