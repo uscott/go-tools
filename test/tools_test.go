@@ -5,9 +5,9 @@ import (
 	"math"
 	"testing"
 
-	"github.com/uscott/gotools/mathx"
-	"github.com/uscott/gotools/misc"
-	"github.com/uscott/gotools/mtrx"
+	"github.com/uscott/go-tools/mathx"
+	"github.com/uscott/go-tools/mtrx"
+	"github.com/uscott/gotools/slice"
 	"golang.org/x/exp/rand"
 )
 
@@ -137,15 +137,15 @@ func Test_GetColVctr(t *testing.T) {
 	}
 }
 
-func Test_SlcRmStr(t *testing.T) {
+func Test_StrSlcRm(t *testing.T) {
 	x := []string{"a", "a", "a", "a"}
-	misc.SlcRmStr(&x, "a")
+	slice.StrSlcRm(&x, "a")
 	if len(x) != 0 {
 		t.Failed()
 	}
 	fmt.Println(x)
 	x = []string{"a", "a", "b", "c"}
-	misc.SlcRmStr(&x, "a")
+	slice.StrSlcRm(&x, "a")
 	if len(x) != 2 {
 		t.Failed()
 	}
@@ -158,7 +158,7 @@ func Test_SlcRmStr(t *testing.T) {
 		x[i] = "no"
 	}
 	rand.Shuffle(len(x), func(i, j int) { x[i], x[j] = x[j], x[i] })
-	misc.SlcRmStr(&x, "no")
+	slice.StrSlcRm(&x, "no")
 	if len(x) != 20 {
 		t.Failed()
 	}
