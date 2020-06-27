@@ -14,6 +14,7 @@ func GetTmStmpUtc() float64 { // UTC timestamp in milliseconds
 	return float64(time.Now().UTC().UnixNano()) / one_million
 }
 
-func NowUtc() time.Time {
+// UTC returns the current time in UTC
+func UTC() time.Time {
 	return time.Now().UTC()
 }

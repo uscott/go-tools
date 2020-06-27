@@ -3,7 +3,7 @@ package mtrx
 import (
 	"fmt"
 
-	"github.com/uscott/gotools/errs"
+	"github.com/uscott/go-tools/errs"
 	"gonum.org/v1/gonum/blas/blas64"
 	"gonum.org/v1/gonum/mat"
 )
@@ -38,12 +38,12 @@ func GetColVctr(src *[]float64, dst *[][]float64, byval bool) error {
 		*dst = (*dst)[:0]
 		return nil
 	}
-	src_len := len(*src)
-	if cap(*dst) < src_len {
-		*dst = make([][]float64, src_len)
+	srclen := len(*src)
+	if cap(*dst) < srclen {
+		*dst = make([][]float64, srclen)
 	}
-	if len(*dst) != src_len {
-		*dst = (*dst)[:src_len]
+	if len(*dst) != srclen {
+		*dst = (*dst)[:srclen]
 	}
 	for i, x := range *src {
 		p := &(*dst)[i]
@@ -126,15 +126,15 @@ func PutMatrix(src *[]float64, dst *[][]float64, rowMajor bool) error {
 		*dst = (*dst)[:0]
 		return nil
 	}
-	src_len := len(*src)
-	if src_len%len(*dst) != 0 {
+	srclen := len(*src)
+	if srclen%len(*dst) != 0 {
 		return fmt.Errorf("Matrix dimension incompatible with slice source length")
 	}
 	var nrows, ncols int
 	switch rowMajor {
 	case true:
 		nrows = len(*dst)
-		ncols = src_len / nrows
+		ncols = srclen / nrows
 		for i, r := range *dst {
 			p := &(*dst)[i]
 			if cap(r) < ncols {
@@ -147,7 +147,7 @@ func PutMatrix(src *[]float64, dst *[][]float64, rowMajor bool) error {
 		}
 	case false:
 		ncols = len(*dst)
-		nrows = src_len / ncols
+		nrows = srclen / ncols
 		for j, c := range *dst {
 			p := &(*dst)[j]
 			if cap(c) < nrows {

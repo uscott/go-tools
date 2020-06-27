@@ -3,7 +3,7 @@ package rndm
 import (
 	"time"
 
-	"github.com/uscott/gotools/errs"
+	"github.com/uscott/go-tools/errs"
 	"golang.org/x/exp/rand"
 	"gonum.org/v1/gonum/mat"
 	"gonum.org/v1/gonum/stat/distuv"

@@ -1,4 +1,4 @@
-module github.com/uscott/gotools
+module github.com/uscott/go-tools
 
 go 1.14
 
