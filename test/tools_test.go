@@ -7,7 +7,7 @@ import (
 
 	"github.com/uscott/go-tools/mathx"
 	"github.com/uscott/go-tools/mtrx"
-	"github.com/uscott/gotools/slice"
+	"github.com/uscott/go-tools/slice"
 	"golang.org/x/exp/rand"
 )
 
