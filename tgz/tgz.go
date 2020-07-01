@@ -148,14 +148,18 @@ func TargzToGzDir(dir string) (e error) {
 	if e != nil {
 		return fmt.Errorf("error returned from os.File.Readdirnames: %v", e.Error())
 	}
+	n := strings.IndexRune(dir, '/')
+	if n < 0 {
+		switch {
+		case dir == ".":
+			dir = ""
+		default:
+			dir += "/"
+		}
+	}
 	// We only apply this to files with extension tgz!
 	for _, x := range names {
-		n := strings.LastIndex(x, ".")
-		var extension string
-		if n >= 0 {
-			extension = x[n+1:]
-		}
-		if extension != "tgz" {
+		if !strings.HasSuffix(x, ".tgz") {
 			continue
 		}
 		if e = TargzToGz(dir + x); e != nil {
