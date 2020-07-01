@@ -117,7 +117,6 @@ func Tgunzip(path string, names *[]string) (e error) {
 		default:
 			return fmt.Errorf("unknown type %v in %v", header.Typeflag, header.Name)
 		}
-		time.Sleep(100 * time.Millisecond)
 	}
 	return nil
 }
@@ -160,7 +159,7 @@ func TargzToGzDir(dir string) (e error) {
 		if extension != "tgz" {
 			continue
 		}
-		if e = TargzToGz(x); e != nil {
+		if e = TargzToGz(dir + x); e != nil {
 			return e
 		}
 		time.Sleep(100 * time.Millisecond)

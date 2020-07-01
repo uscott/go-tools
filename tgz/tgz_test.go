@@ -2,11 +2,9 @@ package tgz
 
 import (
 	"fmt"
-	"io"
 	"os"
 	"strings"
 	"testing"
-	"time"
 )
 
 const testfile string = "tmp/test.txt"
@@ -59,46 +57,7 @@ func TestTargzToGz(t *testing.T) {
 }
 
 func TestTargzToGzDir(t *testing.T) {
-	var dir, fname, ext string
-	fname = testfile
-	n := strings.IndexRune(fname, '/')
-	if n >= 0 {
-		dir = testfile[:n+1]
-		fname = testfile[n+1:]
-	} else {
-		dir = "."
-	}
-	n = strings.LastIndex(fname, ".")
-	if n >= 0 {
-		ext = fname[n+1:]
-		fname = fname[:n]
-	}
-	for i := 0; i < 10; i++ {
-		src, err := os.Open(testfile)
-		if err != nil {
-			src.Close()
-			t.Errorf("%v\n", err)
-		}
-		newname := fmt.Sprintf("%v%v%d.%v", dir, fname, i, ext)
-		dst, err := os.OpenFile(newname, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0764)
-		if err != nil {
-			src.Close()
-			dst.Close()
-			t.Errorf("%v\n", err)
-		}
-		if _, err = io.Copy(dst, src); err != nil {
-			src.Close()
-			dst.Close()
-			t.Errorf("%v\n", err)
-		}
-		src.Close()
-		dst.Close()
-		if err = Tgzip(newname, ""); err != nil {
-			t.Errorf("%v\n", err)
-		}
-		time.Sleep(100 * time.Millisecond)
-	}
-	if err := TargzToGzDir(dir); err != nil {
+	if err := TargzToGzDir("tmp/"); err != nil {
 		t.Errorf("%v\n", err)
 	}
 }
