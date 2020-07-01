@@ -7,7 +7,6 @@ import (
 	"io"
 	"os"
 	"strings"
-	"time"
 )
 
 const compressionLevel = gzip.BestSpeed
@@ -162,7 +161,6 @@ func TargzToGzDir(dir string) (e error) {
 		if e = TargzToGz(dir + x); e != nil {
 			return e
 		}
-		time.Sleep(100 * time.Millisecond)
 	}
 	return nil
 }
