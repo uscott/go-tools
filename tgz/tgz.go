@@ -68,12 +68,11 @@ func Tgzip(path string, extension string) (e error) {
 // Tgunzip extracts a .tgz archive
 func Tgunzip(path string, names *[]string) (e error) {
 	f, e := os.Open(path)
+	defer f.Close()
 	if e != nil {
-		f.Close()
 		return fmt.Errorf("Could not open file %v: %v", path, e.Error())
 	}
 	gzf, e := gzip.NewReader(f)
-	f.Close()
 	if e != nil {
 		return fmt.Errorf("Could not create gzip reader %+v: %v", gzf, e.Error())
 	}
