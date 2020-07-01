@@ -20,4 +20,4 @@ gotools
 tgz/*.gz
 tgz/*.tgz
 tgz/*.txt
-
+tgz/tmp/*

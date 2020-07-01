@@ -2,26 +2,20 @@ package tgz
 
 import (
 	"archive/tar"
-	"bufio"
 	"compress/gzip"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"strings"
+	"time"
 )
 
 const compressionLevel = gzip.BestSpeed
 
 // Gzip applies gzip compression to the file located at the path argument
 func Gzip(path string) (e error) {
-	file, e := os.Open(path)
-	defer file.Close()
-	if e != nil {
-		return e
-	}
-	reader := bufio.NewReader(file)
-	content, e := ioutil.ReadAll(reader)
+	f, e := os.Open(path)
+	defer f.Close()
 	if e != nil {
 		return e
 	}
@@ -31,13 +25,17 @@ func Gzip(path string) (e error) {
 		return e
 	}
 	gzw := gzip.NewWriter(gzf)
-	gzw.Write(content)
-	gzw.Flush()
+	_, e = io.Copy(gzw, f)
+	if e != nil {
+		return fmt.Errorf(
+			"Could not copy the file %s data to the gzip, got error: %s",
+			path, e.Error())
+	}
 	gzw.Close()
 	return nil
 }
 
-// Tgzip puts the file in the path argument into a .tgz file
+// Tgzip puts the file in the path argument into a .tgz archive
 func Tgzip(path string, extension string) (e error) {
 	var tgzpath string
 	switch {
@@ -52,9 +50,9 @@ func Tgzip(path string, extension string) (e error) {
 	default:
 		tgzpath = strings.ReplaceAll(path, extension, "tgz")
 	}
-	file, e := os.Create(tgzpath)
-	defer file.Close()
-	gzpw, e := gzip.NewWriterLevel(file, compressionLevel)
+	f, e := os.Create(tgzpath)
+	defer f.Close()
+	gzpw, e := gzip.NewWriterLevel(f, compressionLevel)
 	defer gzpw.Close()
 	if e != nil {
 		return fmt.Errorf("%v", e.Error())
@@ -64,6 +62,108 @@ func Tgzip(path string, extension string) (e error) {
 	if e = addFileToTarWriter(path, tarw); e != nil {
 		return fmt.Errorf(
 			"Could not add file '%s', to tarball, got error '%s'", path, e.Error())
+	}
+	return nil
+}
+
+// Tgunzip extracts a .tgz archive
+func Tgunzip(path string, names *[]string) (e error) {
+	f, e := os.Open(path)
+	if e != nil {
+		f.Close()
+		return fmt.Errorf("Could not open file %v: %v", path, e.Error())
+	}
+	gzf, e := gzip.NewReader(f)
+	f.Close()
+	if e != nil {
+		return fmt.Errorf("Could not create gzip reader %+v: %v", gzf, e.Error())
+	}
+	var dir string
+	n := strings.IndexRune(path, '/')
+	if n >= 0 {
+		dir = path[:n+1]
+	}
+	tr := tar.NewReader(gzf)
+	for {
+		header, e := tr.Next()
+		if e == io.EOF {
+			break
+		}
+		if e != nil {
+			return fmt.Errorf("tar.Reader.Next() failed: %v", e.Error())
+		}
+		switch header.Typeflag {
+		case tar.TypeDir:
+			if e = os.Mkdir(header.Name, 0754); e != nil {
+				return fmt.Errorf(
+					"could not create directory %v: %v", header.Name, e.Error())
+			}
+		case tar.TypeReg:
+			fname := dir + header.Name
+			opf, e := os.Create(fname)
+			if e != nil {
+				opf.Close()
+				return fmt.Errorf(
+					"could not create file %v: %v", fname, e.Error())
+			}
+			if _, e = io.Copy(opf, tr); e != nil {
+				opf.Close()
+				return fmt.Errorf("io.Copy failed: %v", e.Error())
+			}
+			opf.Close()
+			if names != nil {
+				*names = append(*names, fname)
+			}
+		default:
+			return fmt.Errorf("unknown type %v in %v", header.Typeflag, header.Name)
+		}
+		time.Sleep(100 * time.Millisecond)
+	}
+	return nil
+}
+
+// TargzToGz extracts files from tgz archive then gzip compresses them individually
+func TargzToGz(path string) (e error) {
+	const buflen int = 0
+	names := make([]string, 0, buflen)
+	e = Tgunzip(path, &names)
+	if e != nil {
+		return e
+	}
+	for _, x := range names {
+		if e = Gzip(x); e != nil {
+			return e
+		}
+	}
+	return nil
+}
+
+// TargzToGzDir applies TgzToGz to all files with extension tgz in a directory
+func TargzToGzDir(dir string) (e error) {
+	f, e := os.Open(dir)
+	if e != nil {
+		f.Close()
+		return fmt.Errorf("could not open %v: %v", dir, e.Error())
+	}
+	names, e := f.Readdirnames(0)
+	f.Close()
+	if e != nil {
+		return fmt.Errorf("error returned from os.File.Readdirnames: %v", e.Error())
+	}
+	// We only apply this to files with extension tgz!
+	for _, x := range names {
+		n := strings.LastIndex(x, ".")
+		var extension string
+		if n >= 0 {
+			extension = x[n+1:]
+		}
+		if extension != "tgz" {
+			continue
+		}
+		if e = TargzToGz(x); e != nil {
+			return e
+		}
+		time.Sleep(100 * time.Millisecond)
 	}
 	return nil
 }
