@@ -11,7 +11,7 @@ import (
 	"golang.org/x/exp/rand"
 )
 
-func Test_Math(t *testing.T) {
+func TestMath(t *testing.T) {
 	x := 9
 	n := uint(13)
 	if mathx.Ipow(x, n) != int(math.Pow(float64(x), float64(n))) {
@@ -19,7 +19,7 @@ func Test_Math(t *testing.T) {
 	}
 }
 
-func Test_PutGetMatrix(t *testing.T) {
+func TestPutGetMatrix(t *testing.T) {
 	var u, v []float64
 	u = make([]float64, 4)
 	v = make([]float64, 4)
@@ -76,7 +76,7 @@ func Test_PutGetMatrix(t *testing.T) {
 	fmt.Println(v)
 }
 
-func Test_GetRowVctr(t *testing.T) {
+func TestGetRowVctr(t *testing.T) {
 	var v = make([]float64, 4)
 	v[0] = 1.0
 	v[1] = 3.0
@@ -106,7 +106,7 @@ func Test_GetRowVctr(t *testing.T) {
 	}
 }
 
-func Test_GetColVctr(t *testing.T) {
+func TestGetColVctr(t *testing.T) {
 	vlen := 1000
 	var v = make([]float64, vlen)
 	v[0] = 1
@@ -137,7 +137,7 @@ func Test_GetColVctr(t *testing.T) {
 	}
 }
 
-func Test_StrSlcRm(t *testing.T) {
+func TestStrSlcRm(t *testing.T) {
 	x := []string{"a", "a", "a", "a"}
 	slice.StrSlcRm(&x, "a")
 	if len(x) != 0 {
