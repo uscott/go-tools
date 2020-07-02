@@ -1,6 +1,7 @@
 package mathx
 
 import (
+	"fmt"
 	"math"
 	"time"
 )
@@ -10,16 +11,56 @@ var (
 	Clamp = Fclamp
 )
 
-func ChunkCl(x, chk_sz float64) float64 {
-	return chk_sz * math.Ceil(x/chk_sz)
+// ChunkCl returns the least integer multiple of chunkSz
+// greater than or equal to x
+func ChunkCl(x, chunkSz float64) float64 {
+	return chunkSz * math.Ceil(x/chunkSz)
 }
 
-func ChunkFl(x, chk_sz float64) float64 {
-	return chk_sz * math.Floor(x/chk_sz)
+// ChunkFl returns the greatest integer multiple of chunkSz
+// less than or equal to x
+func ChunkFl(x, chunkSz float64) float64 {
+	return chunkSz * math.Floor(x/chunkSz)
 }
 
-func ChunkRd(x, chk_sz float64) float64 {
-	return chk_sz * math.Round(x/chk_sz)
+// ChunkRd returns the integer multiple of chunkSz nearest x
+func ChunkRd(x, chunkSz float64) float64 {
+	return chunkSz * math.Round(x/chunkSz)
+}
+
+// ChunkClToS returns the string representation of ChunkCl(x, chunkSz)
+// with precision inferred from chunkSz
+func ChunkClToS(x, chunkSz float64) string {
+	if chunkSz <= 0 {
+		return fmt.Sprintf("%v", math.NaN())
+	}
+	var prec uint = uint(math.Ceil(-math.Log10(math.Min(1, chunkSz))))
+	return FtoS(ChunkCl(x, chunkSz), prec)
+}
+
+// ChunkFlToS returns the string representation of ChunkFl(x, chunkSz)
+// with precision inferred from chunkSz
+func ChunkFlToS(x, chunkSz float64) string {
+	if chunkSz <= 0 {
+		return fmt.Sprintf("%v", math.NaN())
+	}
+	var prec uint = uint(math.Ceil(-math.Log10(math.Min(1, chunkSz))))
+	return FtoS(ChunkFl(x, chunkSz), prec)
+}
+
+// ChunkRdToS returns the string representation of ChunkRd(x, chunkSz)
+// with precision inferred from chunkSz
+func ChunkRdToS(x, chunkSz float64) string {
+	if chunkSz <= 0 {
+		return fmt.Sprintf("%v", math.NaN())
+	}
+	var prec uint = uint(math.Ceil(-math.Log10(math.Min(1, chunkSz))))
+	return FtoS(ChunkRd(x, chunkSz), prec)
+}
+
+// FtoS returns the string representation of x with the given precision
+func FtoS(x float64, prec uint) string {
+	return fmt.Sprintf(fmt.Sprintf("\"%%.%df\"", prec), x)
 }
 
 // Fclamp constrains x between lb and ub
