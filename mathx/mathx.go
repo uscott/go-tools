@@ -60,7 +60,7 @@ func ChunkRdToS(x, chunkSz float64) string {
 
 // FtoS returns the string representation of x with the given precision
 func FtoS(x float64, prec uint) string {
-	return fmt.Sprintf(fmt.Sprintf("\"%%.%df\"", prec), x)
+	return fmt.Sprintf(fmt.Sprintf("%%.%df", prec), x)
 }
 
 // Fclamp constrains x between lb and ub
