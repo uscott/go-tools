@@ -188,11 +188,11 @@ func Trapezoidal(x, f []float64) float64 {
 	n := len(x)
 	switch {
 	case len(f) != n:
-		return fmt.Errorf("length mismatch: %d, %d", n, len(f))
+		return math.NaN()
 	case n < 2:
-		return fmt.Errorf("input data too small")
+		return math.NaN()
 	case !sort.Float64sAreSorted(x):
-		return fmt.Errorf("input must be sorted")
+		return math.NaN()
 	}
 	integral := 0.0
 	for i := 0; i < n-1; i++ {
