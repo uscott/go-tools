@@ -3,6 +3,7 @@ package tmath
 import (
 	"fmt"
 	"math"
+	"sort"
 	"time"
 )
 
@@ -182,17 +183,22 @@ func Tmin(args ...time.Time) (minval time.Time) {
 	return
 }
 
-func Integrate(f func(float64) float64, lb float64, ub float64, n uint) float64 {
-	dx := (ub - lb) / float64(n)
-	var x0, x1, val0, val1 float64
-	x0, val0 = lb, f(lb)
-	s := 0.0
-	for i := 0; uint(i) < n; i++ {
-		x1, val1 = x0+dx, f(x0+dx)
-		s += 0.5 * (val0 + val1) * dx
-		x0, val0 = x1, val1
+// Trapezoidal implements the trapezoidal integration approximation without any panics
+func Trapezoidal(x, f []float64) float64 {
+	n := len(x)
+	switch {
+	case len(f) != n:
+		return fmt.Errorf("length mismatch: %d, %d", n, len(f))
+	case n < 2:
+		return fmt.Errorf("input data too small")
+	case !sort.Float64sAreSorted(x):
+		return fmt.Errorf("input must be sorted")
 	}
-	return s
+	integral := 0.0
+	for i := 0; i < n-1; i++ {
+		integral += 0.5 * (x[i+1] - x[i]) * (f[i+1] + f[i])
+	}
+	return integral
 }
 
 func Icl(x float64) int {
