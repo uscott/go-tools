@@ -123,6 +123,19 @@ func Fmin(args ...float64) (minval float64) {
 	return
 }
 
+// Fsign returns +/- 1 or 0 according to the sign of the argument
+func Fsign(x float64) float64 {
+	if math.IsNaN(x) {
+		return x
+	} else if x > 0 {
+		return 1
+	} else if x < 0 {
+		return -1
+	} else {
+		return 0
+	}
+}
+
 // Imax returns the max of integer arguments
 func Imax(args ...int) (maxval int) {
 	if len(args) == 0 {
@@ -151,6 +164,17 @@ func Imin(args ...int) (minval int) {
 		}
 	}
 	return
+}
+
+// Isign is like Fsign but for Ints
+func Isign(x int) int {
+	if x > 0 {
+		return 1
+	} else if x < 0 {
+		return -1
+	} else {
+		return 0
+	}
 }
 
 // Tmax returns the maximum of its arguments
