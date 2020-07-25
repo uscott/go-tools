@@ -2,7 +2,6 @@ package rndm
 
 import (
 	"math"
-	"sync"
 	"time"
 
 	"github.com/uscott/go-tools/errs"
@@ -18,7 +17,6 @@ type BvrtNorm struct {
 	Sigma1 float64
 	Sigma2 float64
 	Rho    float64
-	mtx    *sync.Mutex
 }
 
 // NewBvrtNorm returns a pointer to a BvrtNorm
@@ -29,20 +27,17 @@ func NewBvrtNorm(mu1, mu2, sig1, sig2, rho float64) *BvrtNorm {
 		Sigma1: sig1,
 		Sigma2: sig2,
 		Rho:    rho,
-		mtx:    new(sync.Mutex),
 	}
 	return &bvn
 }
 
 // LogDensity is the natural log of the density function
 func (bvn *BvrtNorm) LogDensity(x1, x2 float64) float64 {
-	bvn.mtx.Lock()
 	m1, m2, s1, s2, c := bvn.Mu1, bvn.Mu2, bvn.Sigma1, bvn.Sigma2, bvn.Rho
 	z1, z2 := (x1-m1)/s1, (x2-m2)/s2
 	var ld float64 = 0
 	ld = -math.Log(2 * math.Pi * s1 * s2 * math.Sqrt(1-c*c))
 	ld -= 0.5 / (1 - c*c) * (z1*z1 + z2*z2 - 2*c*z1*z2)
-	bvn.mtx.Unlock()
 	return ld
 }
 
