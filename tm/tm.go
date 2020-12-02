@@ -1,6 +1,8 @@
 package tm
 
 import (
+	"fmt"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -30,6 +32,32 @@ func GetTmStmp() float64 { // Timestamp in milliseconds
 
 func GetTmStmpUtc() float64 { // UTC timestamp in milliseconds
 	return float64(time.Now().UTC().UnixNano()) / oneMillion
+}
+
+func Milliseconds(t time.Time) (int, error) {
+	s := t.Format(time.StampNano)
+	i := strings.IndexRune(s, '.')
+	if i < 0 || len(s) < i+5 {
+		return -1, fmt.Errorf("could not calculate number of milliseconds")
+	}
+	n, err := strconv.ParseInt(s[i+1:i+5], 10, 64)
+	return int(n), err
+}
+
+func OnTheSecond(t time.Time) (bool, error) {
+	n, err := Milliseconds(t)
+	if err != nil {
+		return false, err
+	}
+	return n == 0, nil
+}
+
+func OnTheMinute(t time.Time) bool {
+	return t.Second() == 0
+}
+
+func OnTheHour(t time.Time) bool {
+	return t.Second() == 0 && t.Minute() == 0
 }
 
 // UTC returns the current time in UTC
