@@ -136,6 +136,52 @@ func Fsign(x float64) float64 {
 	}
 }
 
+// GCD returns the greatest common divisor of its arguments
+// Returns 0 if no arguments or at least one argument is zero
+// Otherwise returns -1 if any are negative
+func GCD(args ...int) (gcd int) {
+	switch len(args) {
+	case 0:
+		gcd = 0
+		return
+	case 1:
+		if args[0] == 0 {
+			gcd = 0
+		} else if args[0] < 0 {
+			gcd = -1
+		} else {
+			gcd = args[0]
+		}
+		return
+	default:
+		for _, x := range args {
+			if x == 0 {
+				gcd = 0
+				return
+			} else if x < 0 {
+				gcd = -1
+			}
+		}
+		if gcd < 0 {
+			return
+		}
+		ub := Imin(args...)
+		for c := 1; c <= ub; c++ {
+			ok := true
+			for _, x := range args {
+				if x%c != 0 {
+					ok = false
+					break
+				}
+			}
+			if ok {
+				gcd = c
+			}
+		}
+		return
+	}
+}
+
 // Imax returns the max of integer arguments
 func Imax(args ...int) (maxval int) {
 	if len(args) == 0 {
