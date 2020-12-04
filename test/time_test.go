@@ -14,5 +14,7 @@ func TestMilliseconds(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Logf("Now: %+v\n", now.Format(time.StampNano))
-	t.Logf("Millisonds: %d\n", ms)
+	t.Logf("Milliseconds:  %d\n", ms)
+	ms = tm.Milliseconds2(now)
+	t.Logf("Milliseconds2: %d\n", ms)
 }
