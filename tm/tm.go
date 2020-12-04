@@ -35,12 +35,12 @@ func GetTmStmpUtc() float64 { // UTC timestamp in milliseconds
 
 func Milliseconds(t time.Time) int {
 	n := t.Nanosecond()
-	return int(math.Round(float64(n) / 1e6))
+	return int(math.Round(float64(n)/1e6)) % 1000000
 }
 
 func Microseconds(t time.Time) int {
 	n := t.Nanosecond()
-	return int(math.Round(float64(n) / 1000))
+	return int(math.Round(float64(n)/1000) % 1000)
 }
 func OnTheSecond(t time.Time) bool {
 	return Milliseconds(t) == 0
