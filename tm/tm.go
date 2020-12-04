@@ -40,7 +40,7 @@ func Milliseconds(t time.Time) int {
 
 func Microseconds(t time.Time) int {
 	n := t.Nanosecond()
-	return int(math.Round(float64(n)/1000) % 1000)
+	return int(math.Round(float64(n)/1000)) % 1000
 }
 func OnTheSecond(t time.Time) bool {
 	return Milliseconds(t) == 0
