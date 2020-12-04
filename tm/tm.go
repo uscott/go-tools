@@ -38,7 +38,7 @@ func Milliseconds(t time.Time) int {
 	return int(math.Round(float64(n) / 1e6))
 }
 
-func Microsecond(t time.Time) int {
+func Microseconds(t time.Time) int {
 	n := t.Nanosecond()
 	return int(math.Round(float64(n) / 1000))
 }
