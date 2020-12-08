@@ -8,6 +8,8 @@ import (
 
 const oneMillion = 1000 * 1000
 
+var TimeZero = time.Date(1970, 1, 1, 0, 0, 0, 0, time.FixedZone("utc", 0))
+
 // Format0 returns the time argument formatted first in RFC3339
 // then with "Z" removed, then "T" replaced with white space
 func Format0(t time.Time) string {
