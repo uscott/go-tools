@@ -17,7 +17,8 @@ gotools
 .DS_Store
 
 # Misc
-tgz/*.gz
-tgz/*.tgz
-tgz/*.txt
+**/*.gz
+**/*.tgz
+*~
+*.txt
 tgz/tmp/*
