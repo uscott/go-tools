@@ -1,13 +1,6 @@
 package mtrx
 
-import (
-	"fmt"
-
-	"github.com/uscott/go-tools/errs"
-	"gonum.org/v1/gonum/blas/blas64"
-	"gonum.org/v1/gonum/mat"
-)
-
+/*
 func CopyMatrix(m *mat.Dense) *mat.Dense {
 	if m == nil {
 		return nil
@@ -209,3 +202,4 @@ func SetRow(m *mat.Dense, row int, val float64) {
 		m.Set(row, j, val)
 	}
 }
+*/

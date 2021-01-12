@@ -1,15 +1,6 @@
 package rndm
 
-import (
-	"math"
-	"math/rand"
-	"time"
-
-	"github.com/uscott/go-tools/errs"
-	"gonum.org/v1/gonum/mat"
-	"gonum.org/v1/gonum/stat/distuv"
-)
-
+/*
 // BvrtNorm is a 2 dimensional normal distribution
 type BvrtNorm struct {
 	Mu1    float64
@@ -134,3 +125,4 @@ func (rng *MvRng) MvRand(chol *mat.TriDense, upper bool, eps []float64) error {
 	}
 	return nil
 }
+*/
