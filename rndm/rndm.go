@@ -2,10 +2,10 @@ package rndm
 
 import (
 	"math"
+	"math/rand"
 	"time"
 
 	"github.com/uscott/go-tools/errs"
-	"golang.org/x/exp/rand"
 	"gonum.org/v1/gonum/mat"
 	"gonum.org/v1/gonum/stat/distuv"
 )
@@ -77,18 +77,18 @@ func (rng *MvRng) Uint64() uint64 {
 }
 
 // Seed seeds DftlSrc
-func (src *DfltSrc) Seed(seed uint64) {
-	rand.Seed(uint64(seed))
+func (src *DfltSrc) Seed(seed int64) {
+	rand.Seed(seed)
 }
 
 // Uint64 returns random uint64
-func (src *DfltSrc) Uint64() uint64 {
-	return rand.Uint64()
+func (src *DfltSrc) Int63() int64 {
+	return rand.Int63()
 }
 
 // Seed seeds RNG
-func (rng *RNG) Seed(seed uint64) {
-	rng.Rand.Seed(uint64(seed))
+func (rng *RNG) Seed(seed int64) {
+	rng.Rand.Seed(seed)
 }
 
 // Uint64 returns pseudo random uint64
@@ -97,7 +97,7 @@ func (rng *RNG) Uint64() uint64 {
 }
 
 // NewRngSeeded returns pointer to seeded RNG
-func NewRngSeeded(seed uint64) *RNG {
+func NewRngSeeded(seed int64) *RNG {
 	return &RNG{rand.New(rand.NewSource(seed))}
 }
 
@@ -109,7 +109,7 @@ func NewRng() *RNG {
 // MvRand stores a multivariate random draw inside eps
 func (rng *MvRng) MvRand(chol *mat.TriDense, upper bool, eps []float64) error {
 	if chol == nil {
-		return errs.ErrNilPtr
+		return errs.NilPtr
 	}
 	var (
 		n int
@@ -117,7 +117,7 @@ func (rng *MvRng) MvRand(chol *mat.TriDense, upper bool, eps []float64) error {
 	)
 	n, _ = chol.Dims()
 	if cap(eps) < n {
-		return errs.ErrCapacity
+		return errs.Capacity
 	}
 	if upper {
 		u = mat.NewDense(1, n, eps)

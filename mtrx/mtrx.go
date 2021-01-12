@@ -19,7 +19,7 @@ func CopyMatrix(m *mat.Dense) *mat.Dense {
 func GetRowVctr(src *[]float64, dst *[][]float64) error {
 	switch {
 	case src == nil || dst == nil:
-		return errs.ErrNilPtr
+		return errs.NilPtr
 	case len(*src) == 0:
 		*dst = (*dst)[:0]
 		return nil
@@ -33,7 +33,7 @@ func GetRowVctr(src *[]float64, dst *[][]float64) error {
 func GetColVctr(src *[]float64, dst *[][]float64, byval bool) error {
 	switch {
 	case src == nil || dst == nil:
-		return errs.ErrNilPtr
+		return errs.NilPtr
 	case len(*src) == 0:
 		*dst = (*dst)[:0]
 		return nil
@@ -60,9 +60,9 @@ func GetColVctr(src *[]float64, dst *[][]float64, byval bool) error {
 func GetMatrix(src *[][]float64, dst *[]float64, rowMajor bool) error {
 	switch {
 	case src == nil:
-		return errs.ErrNilPtr
+		return errs.NilPtr
 	case dst == nil:
-		return errs.ErrNilPtr
+		return errs.NilPtr
 	case len(*src) == 0:
 		*dst = (*dst)[:0]
 		return nil
@@ -119,9 +119,9 @@ func Ncols(m *mat.Dense) int {
 func PutMatrix(src *[]float64, dst *[][]float64, rowMajor bool) error {
 	switch {
 	case src == nil:
-		return errs.ErrNilPtr
+		return errs.NilPtr
 	case dst == nil:
-		return errs.ErrNilPtr
+		return errs.NilPtr
 	case len(*src) == 0:
 		*dst = (*dst)[:0]
 		return nil

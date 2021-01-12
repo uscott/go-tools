@@ -8,7 +8,6 @@ import (
 	"github.com/uscott/go-tools/tmath"
 	"github.com/uscott/go-tools/mtrx"
 	"github.com/uscott/go-tools/slice"
-	"golang.org/x/exp/rand"
 )
 
 func TestMath(t *testing.T) {
