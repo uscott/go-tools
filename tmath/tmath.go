@@ -5,6 +5,9 @@ import (
 	"math"
 	"sort"
 	"time"
+
+	"github.com/shopspring/decimal"
+	"github.com/uscott/go-tools/errs"
 )
 
 // Clamp is an alias for Fclamp
@@ -57,6 +60,16 @@ func ChunkRdToS(x, chunkSz float64) string {
 	}
 	var prec uint = uint(math.Ceil(-math.Log10(math.Min(1, chunkSz))))
 	return FtoS(ChunkRd(x, chunkSz), prec)
+}
+
+// DecimalChunkRound rounds x in place to the nearest chunk
+// specified by sz
+func DecimalChunkRound(x, sz *decimal.Decimal) (err error) {
+	if x == nil || sz == nil {
+		return errs.NilPtrArg
+	}
+	*x = sz.Mul(x.Div(*sz).Round(0))
+	return
 }
 
 // FtoS returns the string representation of x with the given precision
