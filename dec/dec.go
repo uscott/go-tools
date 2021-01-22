@@ -43,7 +43,7 @@ func DecimalMin(args ...decimal.Decimal) (minval decimal.Decimal) {
 
 func PtrDecimalMax(args ...*decimal.Decimal) (ptrmax *decimal.Decimal) {
 	if len(args) == 0 {
-		panic("No args passed to PtrDecimalMax")
+		return
 	}
 	ptrmax = args[0]
 	for _, p := range args[1:] {
@@ -62,7 +62,7 @@ func PtrDecimalMax(args ...*decimal.Decimal) (ptrmax *decimal.Decimal) {
 
 func PtrDecimalMin(args ...*decimal.Decimal) (ptrmin *decimal.Decimal) {
 	if len(args) == 0 {
-		panic("No args passed to PtrDecimalMax")
+		return
 	}
 	ptrmin = args[0]
 	for _, p := range args[1:] {
