@@ -199,12 +199,12 @@ func GCD(args ...int) (gcd int) {
 func Imax(args ...int) (maxval int) {
 	if len(args) == 0 {
 		maxval = math.MinInt64
-	} else {
-		maxval = args[0]
-		for _, x := range args[1:] {
-			if x > maxval {
-				maxval = x
-			}
+		return
+	}
+	maxval = args[0]
+	for _, x := range args[1:] {
+		if x > maxval {
+			maxval = x
 		}
 	}
 	return
@@ -214,12 +214,12 @@ func Imax(args ...int) (maxval int) {
 func Imin(args ...int) (minval int) {
 	if len(args) == 0 {
 		minval = math.MaxInt64
-	} else {
-		minval = args[0]
-		for _, x := range args[1:] {
-			if x < minval {
-				minval = x
-			}
+		return
+	}
+	minval = args[0]
+	for _, x := range args[1:] {
+		if x < minval {
+			minval = x
 		}
 	}
 	return
