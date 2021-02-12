@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/uscott/go-tools/tmath"
-	"github.com/uscott/go-tools/mtrx"
 	"github.com/uscott/go-tools/slice"
 )
 
@@ -18,6 +17,7 @@ func TestMath(t *testing.T) {
 	}
 }
 
+/*
 func TestPutGetMatrix(t *testing.T) {
 	var u, v []float64
 	u = make([]float64, 4)
@@ -135,6 +135,7 @@ func TestGetColVctr(t *testing.T) {
 		t.Failed()
 	}
 }
+*/
 
 func TestStrSlcRm(t *testing.T) {
 	x := []string{"a", "a", "a", "a"}
