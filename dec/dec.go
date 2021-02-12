@@ -15,32 +15,6 @@ func DecimalChunkRound(x, sz *decimal.Decimal) (err error) {
 	return
 }
 
-func DecimalMax(args ...decimal.Decimal) (maxval decimal.Decimal) {
-	if len(args) == 0 {
-		panic("No args passed to DecimalMax")
-	}
-	maxval = args[0]
-	for _, x := range args[1:] {
-		if maxval.LessThan(x) {
-			maxval = x
-		}
-	}
-	return
-}
-
-func DecimalMin(args ...decimal.Decimal) (minval decimal.Decimal) {
-	if len(args) == 0 {
-		panic("No args passed to DecimalMin")
-	}
-	minval = args[0]
-	for _, x := range args[1:] {
-		if minval.GreaterThan(x) {
-			minval = x
-		}
-	}
-	return
-}
-
 func PtrDecimalMax(args ...*decimal.Decimal) (ptrmax *decimal.Decimal) {
 	if len(args) == 0 {
 		return
