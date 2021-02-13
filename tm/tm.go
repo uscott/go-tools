@@ -30,11 +30,11 @@ func Format2(t time.Time) string {
 	return t.Format(time.RFC3339)[:10]
 }
 
-func GetTmStmp() float64 { // Timestamp in milliseconds
+func GetTimeStampMS() float64 { // Timestamp in milliseconds
 	return float64(time.Now().UnixNano()) / oneMillion
 }
 
-func GetTmStmpUtc() float64 { // UTC timestamp in milliseconds
+func GetTimeStampMSUTC() float64 { // UTC timestamp in milliseconds
 	return float64(time.Now().UTC().UnixNano()) / oneMillion
 }
 
