@@ -73,10 +73,23 @@ func TestRev(t *testing.T) {
 	}
 	y := make([]float64, n)
 	copy(y, x)
-	FltRev(y)
+	slice.FltRev(y)
 	for i := 0; i < n; i++ {
 		if x[i] != y[n-i-1] {
 			t.FailNow()
 		}
 	}
+}
+
+func TestConvert(t *testing.T) {
+
+	a := []float64{1.3, 5.4, 28.7}
+	x := slice.ConvertSlice(a)
+	t.Logf("a = %+v", a)
+	t.Logf("x = %+v", x)
+
+	b := [3]int{1, 2, 3}
+	y := slice.ConvertSlice(b)
+	t.Logf("b = %+v", b)
+	t.Logf("y = %+v", y)
 }

@@ -6,6 +6,30 @@ import (
 	"sort"
 )
 
+// ConvertSlice converts a slice of type [](whatever) to []interface{}
+// Panics if arg is not a slice or array
+func ConvertSlice(s interface{}) []interface{} {
+
+	x := reflect.ValueOf(s)
+	kind := x.Kind()
+	if kind != reflect.Array && kind != reflect.Slice {
+		panic("Arg must be array or slice")
+	}
+
+	n := x.Len()
+	output := make([]interface{}, n)
+
+	if n == 0 {
+		return output
+	}
+
+	for i := 0; i < n; i++ {
+		output[i] = x.Index(i).Interface()
+	}
+
+	return output
+}
+
 // FltRev reverses the order of the slice of float64s
 func FltRev(slc []float64) {
 	for i, j := 0, len(slc)-1; i < j; i, j = i+1, j-1 {
