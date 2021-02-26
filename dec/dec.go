@@ -5,14 +5,37 @@ import (
 	"github.com/uscott/go-tools/errs"
 )
 
-// DecimalChunkRound rounds x in place to the nearest chunk
-// specified by sz
-func DecimalChunkRound(x, sz *decimal.Decimal) (err error) {
+// ChunkCeil returns *x ceiled to the chunk *sz
+// Panics if nil pointer is passed
+func ChunkCeil(x, sz *decimal.Decimal) decimal.Decimal {
+
 	if x == nil || sz == nil {
-		return errs.NilPtrArg
+		panic(errs.NilPtrArg)
 	}
-	*x = sz.Mul(x.Div(*sz).Round(0))
-	return
+
+	return sz.Mul(x.Div(*sz).Ceil())
+}
+
+// ChunkFlorr returns *x floored to the chunk *sz
+// Panics if nil pointer is passed
+func ChunkFloor(x, sz *decimal.Decimal) decimal.Decimal {
+
+	if x == nil || sz == nil {
+		panic(errs.NilPtrArg)
+	}
+
+	return sz.Mul(x.Div(*sz).Floor())
+}
+
+// ChunkRound returns *x rounded to the nearest chunk *sz
+// Panics if nil pointer is passed
+func ChunkRound(x, sz *decimal.Decimal) decimal.Decimal {
+
+	if x == nil || sz == nil {
+		panic(errs.NilPtrArg)
+	}
+
+	return sz.Mul(x.Div(*sz).Round(0))
 }
 
 func PtrDecimalMax(args ...*decimal.Decimal) (ptrmax *decimal.Decimal) {
