@@ -2,40 +2,33 @@ package dec
 
 import (
 	"github.com/shopspring/decimal"
-	"github.com/uscott/go-tools/errs"
 )
 
-// ChunkCeil returns *x ceiled to the chunk *sz
-// Panics if nil pointer is passed
-func ChunkCeil(x, sz *decimal.Decimal) decimal.Decimal {
-
-	if x == nil || sz == nil {
-		panic(errs.NilPtrArg)
+// ChunkCeil returns x ceiled to the chunk sz
+// Panics if sz is zero
+func ChunkCeil(x, sz decimal.Decimal) decimal.Decimal {
+	if sz.IsZero() {
+		panic("Division by zero")
 	}
-
-	return sz.Mul(x.Div(*sz).Ceil())
+	return sz.Mul(x.Div(sz).Ceil())
 }
 
-// ChunkFlorr returns *x floored to the chunk *sz
-// Panics if nil pointer is passed
-func ChunkFloor(x, sz *decimal.Decimal) decimal.Decimal {
-
-	if x == nil || sz == nil {
-		panic(errs.NilPtrArg)
+// ChunkFloor returns x floored to the chunk sz
+// Panics if sz is zero
+func ChunkFloor(x, sz decimal.Decimal) decimal.Decimal {
+	if sz.IsZero() {
+		panic("Division by zero")
 	}
-
-	return sz.Mul(x.Div(*sz).Floor())
+	return sz.Mul(x.Div(sz).Floor())
 }
 
-// ChunkRound returns *x rounded to the nearest chunk *sz
-// Panics if nil pointer is passed
-func ChunkRound(x, sz *decimal.Decimal) decimal.Decimal {
-
-	if x == nil || sz == nil {
-		panic(errs.NilPtrArg)
+// ChunkRound returns x rounded to the nearest chunk sz
+// Panics if sz is zero
+func ChunkRound(x, sz decimal.Decimal) decimal.Decimal {
+	if sz.IsZero() {
+		panic("Division by zero")
 	}
-
-	return sz.Mul(x.Div(*sz).Round(0))
+	return sz.Mul(x.Div(sz).Round(0))
 }
 
 func PtrDecimalMax(args ...*decimal.Decimal) (ptrmax *decimal.Decimal) {
