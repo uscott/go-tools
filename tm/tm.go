@@ -52,6 +52,8 @@ func Microseconds(t time.Time) int {
 
 func ParseYMD(s string) (time.Time, error) {
 
+	zero := time.Time{}
+
 	if len(s) < 8 {
 		return zero, fmt.Errorf("String too short: %s", s)
 	}
@@ -63,8 +65,6 @@ func ParseYMD(s string) (time.Time, error) {
 	if b[4] == '-' || b[4] == ' ' {
 		b = append(b[:4], b[5:]...)
 	}
-
-	zero := time.Time{}
 
 	y, err := strconv.Atoi(string(b[:4]))
 	if err != nil {
@@ -86,6 +86,8 @@ func ParseYMD(s string) (time.Time, error) {
 
 func ParseYMDHMS(s string) (time.Time, error) {
 
+	zero := time.Time{}
+
 	if len(s) < 14 {
 		return zero, fmt.Errorf("String too short: %s", s)
 	}
@@ -96,8 +98,6 @@ func ParseYMDHMS(s string) (time.Time, error) {
 			b = append(b[:i], b[i+1:]...)
 		}
 	}
-
-	zero := time.Time{}
 
 	y, err := strconv.Atoi(string(b[:4]))
 	if err != nil {
