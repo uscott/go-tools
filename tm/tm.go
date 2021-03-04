@@ -1,7 +1,9 @@
 package tm
 
 import (
+	"fmt"
 	"math"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -47,6 +49,89 @@ func Microseconds(t time.Time) int {
 	n := t.Nanosecond()
 	return int(math.Round(float64(n)/1000)) % oneMillion
 }
+
+func ParseYMD(s string) (time.Time, error) {
+
+	if len(s) < 8 {
+		return zero, fmt.Errorf("String too short: %s", s)
+	}
+
+	b := []byte(s)
+	if b[7] == '-' || b[7] == ' ' {
+		b = append(b[:7], b[8:]...)
+	}
+	if b[4] == '-' || b[4] == ' ' {
+		b = append(b[:4], b[5:]...)
+	}
+
+	zero := time.Time{}
+
+	y, err := strconv.Atoi(string(b[:4]))
+	if err != nil {
+		return zero, err
+	}
+
+	m, err := strconv.Atoi(string(b[4:6]))
+	if err != nil {
+		return zero, err
+	}
+
+	d, err := strconv.Atoi(string(b[6:8]))
+	if err != nil {
+		return zero, err
+	}
+
+	return time.Date(y, time.Month(m), d, 0, 0, 0, 0, time.UTC), nil
+}
+
+func ParseYMDHMS(s string) (time.Time, error) {
+
+	if len(s) < 14 {
+		return zero, fmt.Errorf("String too short: %s", s)
+	}
+
+	b := []byte(s)
+	for _, i := range []int{16, 13, 10, 7, 4} {
+		if len(b) > i+1 && (b[i] == ':' || b[i] == ' ' || b[i] == '-') {
+			b = append(b[:i], b[i+1:]...)
+		}
+	}
+
+	zero := time.Time{}
+
+	y, err := strconv.Atoi(string(b[:4]))
+	if err != nil {
+		return zero, err
+	}
+
+	m, err := strconv.Atoi(string(b[4:6]))
+	if err != nil {
+		return zero, err
+	}
+
+	d, err := strconv.Atoi(string(b[6:8]))
+	if err != nil {
+		return zero, err
+	}
+
+	hh, err := strconv.Atoi(string(b[8:10]))
+	if err != nil {
+		return zero, err
+	}
+
+	mm, err := strconv.Atoi(string(b[10:12]))
+	if err != nil {
+		return zero, err
+	}
+
+	dd, err := strconv.Atoi(string(b[12:14]))
+	if err != nil {
+		return zero, err
+	}
+
+	return time.Date(y, time.Month(m), d, hh, mm, dd, 0, time.UTC), nil
+}
+
 func OnTheSecond(t time.Time) bool {
 	return Milliseconds(t) == 0
 }
