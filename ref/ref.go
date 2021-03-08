@@ -4,7 +4,7 @@ import (
 	"reflect"
 )
 
-func RecursiveElem(v reflect.Value) reflect.Value {
+func DeepElem(v reflect.Value) reflect.Value {
 
 	for {
 		kind := v.Kind()
