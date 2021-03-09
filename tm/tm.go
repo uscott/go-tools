@@ -86,6 +86,9 @@ func ParseYMD(s string) (time.Time, error) {
 
 func ParseYMDHMS(s string) (time.Time, error) {
 
+	if len(s) <= 10 {
+		return ParseYMD(s)
+	}
 	zero := time.Time{}
 
 	if len(s) < 14 {
