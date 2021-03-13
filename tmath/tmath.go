@@ -5,9 +5,16 @@ import (
 	"math"
 	"sort"
 	"time"
+)
 
-	"github.com/shopspring/decimal"
-	"github.com/uscott/go-tools/errs"
+var (
+	ceil  = math.Ceil
+	floor = math.Floor
+	inf   = math.Inf
+	log10 = math.Log10
+	min   = math.Min
+	nan   = math.NaN
+	round = math.Round
 )
 
 // Clamp is an alias for Fclamp
@@ -18,27 +25,27 @@ var (
 // ChunkCl returns the least integer multiple of chunkSz
 // greater than or equal to x
 func ChunkCl(x, chunkSz float64) float64 {
-	return chunkSz * math.Ceil(x/chunkSz)
+	return chunkSz * ceil(x/chunkSz)
 }
 
 // ChunkFl returns the greatest integer multiple of chunkSz
 // less than or equal to x
 func ChunkFl(x, chunkSz float64) float64 {
-	return chunkSz * math.Floor(x/chunkSz)
+	return chunkSz * floor(x/chunkSz)
 }
 
 // ChunkRd returns the integer multiple of chunkSz nearest x
 func ChunkRd(x, chunkSz float64) float64 {
-	return chunkSz * math.Round(x/chunkSz)
+	return chunkSz * round(x/chunkSz)
 }
 
 // ChunkClToS returns the string representation of ChunkCl(x, chunkSz)
 // with precision inferred from chunkSz
 func ChunkClToS(x, chunkSz float64) string {
 	if chunkSz <= 0 {
-		return fmt.Sprintf("%v", math.NaN())
+		return fmt.Sprintf("%v", nan())
 	}
-	var prec uint = uint(math.Ceil(-math.Log10(math.Min(1, chunkSz))))
+	prec := uint(ceil(-log10(min(1, chunkSz))))
 	return FtoS(ChunkCl(x, chunkSz), prec)
 }
 
@@ -46,9 +53,9 @@ func ChunkClToS(x, chunkSz float64) string {
 // with precision inferred from chunkSz
 func ChunkFlToS(x, chunkSz float64) string {
 	if chunkSz <= 0 {
-		return fmt.Sprintf("%v", math.NaN())
+		return fmt.Sprintf("%v", nan())
 	}
-	var prec uint = uint(math.Ceil(-math.Log10(math.Min(1, chunkSz))))
+	prec := uint(ceil(-log10(min(1, chunkSz))))
 	return FtoS(ChunkFl(x, chunkSz), prec)
 }
 
@@ -56,20 +63,10 @@ func ChunkFlToS(x, chunkSz float64) string {
 // with precision inferred from chunkSz
 func ChunkRdToS(x, chunkSz float64) string {
 	if chunkSz <= 0 {
-		return fmt.Sprintf("%v", math.NaN())
+		return fmt.Sprintf("%v", nan())
 	}
-	var prec uint = uint(math.Ceil(-math.Log10(math.Min(1, chunkSz))))
+	prec := uint(ceil(-log10(min(1, chunkSz))))
 	return FtoS(ChunkRd(x, chunkSz), prec)
-}
-
-// DecimalChunkRound rounds x in place to the nearest chunk
-// specified by sz
-func DecimalChunkRound(x, sz *decimal.Decimal) (err error) {
-	if x == nil || sz == nil {
-		return errs.NilPtrArg
-	}
-	*x = sz.Mul(x.Div(*sz).Round(0))
-	return
 }
 
 // FtoS returns the string representation of x with the given precision
@@ -109,7 +106,7 @@ func Fdiv(numerator, denominator int) float64 {
 // Fmax returns the max of float64 arguments
 func Fmax(args ...float64) (maxval float64) {
 	if len(args) == 0 {
-		maxval = math.Inf(-1)
+		maxval = inf(-1)
 	} else {
 		maxval = args[0]
 		for _, x := range args[1:] {
@@ -124,7 +121,7 @@ func Fmax(args ...float64) (maxval float64) {
 // Fmin returns the min of float64 arguments
 func Fmin(args ...float64) (minval float64) {
 	if len(args) == 0 {
-		minval = math.Inf(1)
+		minval = inf(1)
 	} else {
 		minval = args[0]
 		for _, x := range args[1:] {
@@ -236,6 +233,46 @@ func Isign(x int) int {
 	}
 }
 
+// RoundToSigFigs rounds to the significant number of figures
+// If sigfigs < 1 it assumes the minimal number of significant figures
+// to the right of the decimal point
+// If right == true that means sigfigs specifies the numbers of
+// nonzero sigfigs to the right of the decimal point
+func RoundToSigFigs(x float64, sigfigs int, right bool) float64 {
+
+	if x == 0 {
+		return 0
+	}
+
+	sign, x := Sign(x), math.Abs(x)
+
+	var x1, x2 float64
+	var n1, n2 int
+
+	if sigfigs < 1 || right {
+		x1, x2 = math.Modf(x)
+		n1 = Ifl(log10(x1))
+	}
+
+	if sigfigs < 1 {
+		if x2 != 0 {
+			n2 = -Ifl(log10(x2))
+		}
+		sigfigs = n1 + n2 + 1
+	} else if right {
+		sigfigs += n1
+	}
+
+	n := Ifl(log10(x)) + 1 - sigfigs
+	a := math.Pow10(n)
+
+	return sign * a * round(x/a)
+}
+
+func Sign(x float64) float64 {
+	return math.Copysign(1, x)
+}
+
 // Tmax returns the maximum of its arguments
 func Tmax(args ...time.Time) (maxval time.Time) {
 	if len(args) == 0 {
@@ -271,11 +308,11 @@ func Trapezoidal(x, f []float64) float64 {
 	n := len(x)
 	switch {
 	case len(f) != n:
-		return math.NaN()
+		return nan()
 	case n < 2:
-		return math.NaN()
+		return nan()
 	case !sort.Float64sAreSorted(x):
-		return math.NaN()
+		return nan()
 	}
 	integral := 0.0
 	for i := 0; i < n-1; i++ {
@@ -285,15 +322,15 @@ func Trapezoidal(x, f []float64) float64 {
 }
 
 func Icl(x float64) int {
-	return int(math.Ceil(x))
+	return int(ceil(x))
 }
 
 func Ifl(x float64) int {
-	return int(math.Floor(x))
+	return int(floor(x))
 }
 
 func Ird(x float64) int {
-	return int(math.Round(x))
+	return int(round(x))
 }
 
 func Ipow(x int, n uint) (y int) {
