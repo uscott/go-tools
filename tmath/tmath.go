@@ -251,11 +251,13 @@ func RoundToSigFigs(x float64, sigfigs int, right bool) float64 {
 
 	if sigfigs < 1 || right {
 		x1, x2 = math.Modf(x)
+	}
+	if x1 > 0 {
 		n1 = Ifl(log10(x1))
 	}
 
 	if sigfigs < 1 {
-		if x2 != 0 {
+		if x2 > 0 {
 			n2 = -Ifl(log10(x2))
 		}
 		sigfigs = n1 + n2 + 1
